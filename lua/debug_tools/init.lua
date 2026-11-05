@@ -51,10 +51,12 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("DebugTools", function(args)
     local action = args.args ~= "" and args.args or "show"
     assert(
-      vim.tbl_contains({ "start", "stop", "toggle", "show", "highlights", "save" }, action),
+      vim.tbl_contains({ "start", "stop", "toggle", "show", "highlights", "save", "startup" }, action),
       "Unknown debug action"
     )
-    if action == "highlights" then
+    if action == "startup" then
+      require("debug_tools.startuptime").run()
+    elseif action == "highlights" then
       M.profiler.highlights()
     elseif action == "save" then
       vim.notify(M.profiler.save(), vim.log.levels.INFO, { title = "Profile saved" })
@@ -64,7 +66,7 @@ function M.setup(opts)
   end, {
     nargs = "?",
     complete = function()
-      return { "start", "stop", "toggle", "show", "highlights", "save" }
+      return { "start", "stop", "toggle", "show", "highlights", "save", "startup" }
     end,
     force = true,
   })
@@ -81,6 +83,10 @@ function M.disable()
     vim.print = originals.print
   end
   installed, originals = {}, {}
+  local startup = package.loaded["debug_tools.startuptime"]
+  if startup then
+    startup.cancel()
+  end
   local profiler = package.loaded["debug_tools.profiler"]
   if profiler then
     profiler.stop()

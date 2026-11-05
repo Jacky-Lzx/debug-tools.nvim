@@ -41,4 +41,24 @@ before plugin initialization to capture startup. It stops after synchronous even
 handlers and saves automatically; exiting before the event also stops and saves.
 The plugin does not install a startup hook unless requested.
 
+`:DebugTools startup` measures native startup in ten sequential child Neovim
+processes with an attached 80×24 UI. This uses `--startuptime`, independently of
+the Lua hook profiler. Reports show per-event mean self/inclusive time and total
+mean, median, minimum and maximum. These are warm runs ending at the native
+`NVIM STARTED` marker, not a measurement of deferred plugin readiness.
+Enter opens an event's source; q closes the report.
+
+```lua
+local startup = require('debug_tools.startuptime')
+local run = startup.run({ tries = 10 }) -- same executable, environment and cwd
+-- startup.run({ tries = 3, args = { '-u', 'NONE' }, show = false,
+--   on_done = function(result, err) ... end })
+-- run.cancel() -- child and temporary files are cleaned up
+```
+
+Children inherit your configuration and its normal startup side effects. `PROF`
+is disabled in children; each child has a 15-second timeout. Runs never enable
+profiling in the parent editor. `startup.last` retains the latest result and
+`startup.show()` reopens it. `disable()` cancels an active measurement.
+
 Validation: `sh tests/run.sh`.

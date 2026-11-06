@@ -44,7 +44,7 @@ assert(#snapshot.functions > 0 and snapshot.duration_ms > 0)
 local found
 for _, row in ipairs(snapshot.functions) do
   assert(row.self_ms >= 0 and row.total_ms >= row.self_ms)
-  if row.line == debug.getinfo(parent, "S").linedefined then
+  if row.source == debug.getinfo(parent, "S").source and row.line == debug.getinfo(parent, "S").linedefined then
     assert(row.count == 6, vim.inspect(row))
     found = true
   end

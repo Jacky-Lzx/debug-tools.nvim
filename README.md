@@ -71,3 +71,14 @@ Commands belong to the plugin; choose global entry keys and short aliases in
 your configuration. Registration reports same-name conflicts without replacing
 user commands. Reconfiguration refreshes only commands still owned by this
 plugin, and cleanup preserves subsequent user replacements.
+
+## Setup contract
+
+`setup(nil)` uses defaults. Configuration must be a table; caller-owned tables
+are copied before use. Invalid configuration types do not replace live handlers
+or commands. Repeating setup must not accumulate automatic registrations.
+
+`disable()` releases globals and profiler resources while retaining options for
+`enable()`. `dispose()` additionally forgets those options. Both preserve global
+functions and commands replaced by the user. Reconfiguration does not stop an
+existing profiler run; invalid options leave it and the active globals untouched.

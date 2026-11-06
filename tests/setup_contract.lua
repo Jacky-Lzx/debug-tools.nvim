@@ -1,0 +1,31 @@
+vim.opt.rtp:prepend(vim.fn.getcwd())
+local plugin = require("debug_tools")
+local options = { globals = true, override_print = false }
+local caller = vim.deepcopy(options)
+plugin.setup(options)
+assert(vim.deep_equal(caller, options), "setup mutated caller configuration")
+local commands = vim.api.nvim_get_commands({})
+local handlers = vim.api.nvim_get_autocmds({})
+assert(not pcall(plugin.setup, false), "setup(false) must reject an invalid configuration type")
+assert(vim.deep_equal(commands, vim.api.nvim_get_commands({})), "Invalid setup replaced commands")
+assert(vim.deep_equal(handlers, vim.api.nvim_get_autocmds({})), "Invalid setup replaced handlers")
+plugin.setup(caller)
+assert(#vim.api.nvim_get_autocmds({}) == #handlers, "Repeated setup duplicated automatic handlers")
+print("debug-tools.nvim: setup input isolation, invalid configuration and registration lifetime passed")
+
+local inspect = plugin.inspect
+assert(_G.dd == inspect and plugin.is_enabled())
+assert(not pcall(plugin.setup, { globals = "invalid" }))
+assert(_G.dd == inspect and plugin.is_enabled())
+plugin.disable()
+assert(not plugin.is_enabled() and _G.dd ~= inspect)
+plugin.enable()
+assert(plugin.is_enabled() and _G.dd == inspect)
+local manual = function() end
+_G.dd = manual
+plugin.dispose()
+plugin.dispose()
+assert(_G.dd == manual)
+plugin.enable()
+assert(_G.dd == manual, "Disposed options must not enable globals again")
+plugin.dispose()

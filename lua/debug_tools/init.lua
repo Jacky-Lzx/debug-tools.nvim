@@ -1,5 +1,6 @@
 local M = {}
 local originals, installed = {}, {}
+local last_config, enabled = nil, false
 
 function M.inspect(...)
   local values = {}
@@ -28,7 +29,11 @@ M.profiler = setmetatable({}, {
 })
 
 function M.setup(opts)
-  opts = opts or {}
+  assert(opts == nil or type(opts) == "table", "debug-tools.nvim: setup expects a table")
+  opts = vim.deepcopy(opts or {})
+  for _, name in ipairs({ "globals", "override_print" }) do
+    assert(opts[name] == nil or type(opts[name]) == "boolean", name .. " must be boolean")
+  end
   if installed.dd and _G.dd == installed.dd then
     _G.dd = originals.dd
   end
@@ -75,9 +80,27 @@ function M.setup(opts)
     end,
     force = true,
   })
+  last_config, enabled = opts, true
+end
+
+function M.enable()
+  if not enabled then
+    M.setup(last_config)
+  end
+  return M
+end
+
+function M.is_enabled()
+  return enabled
+end
+
+function M.dispose()
+  M.disable()
+  last_config = nil
 end
 
 function M.disable()
+  enabled = false
   if installed.dd and _G.dd == installed.dd then
     _G.dd = originals.dd
   end

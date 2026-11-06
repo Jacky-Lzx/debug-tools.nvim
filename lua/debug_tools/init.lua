@@ -48,7 +48,12 @@ function M.setup(opts)
     originals.print, installed.print = vim.print, M.inspect
     vim.print = installed.print
   end
-  vim.api.nvim_create_user_command("DebugTools", function(args)
+  require("debug_tools.user_command").create("DebugToolsStartup", function(args)
+    local tries = args.args == "" and 10 or tonumber(args.args)
+    assert(tries, "Expected a run count from 1 to 100")
+    require("debug_tools.startuptime").run({ tries = tries })
+  end, { nargs = "?", desc = "Measure native Neovim startup (default: 10 runs)" })
+  require("debug_tools.user_command").create("DebugTools", function(args)
     local action = args.args ~= "" and args.args or "show"
     assert(
       vim.tbl_contains({ "start", "stop", "toggle", "show", "highlights", "save", "startup" }, action),
@@ -92,6 +97,7 @@ function M.disable()
     profiler.stop()
     profiler.highlights(false)
   end
-  pcall(vim.api.nvim_del_user_command, "DebugTools")
+  require("debug_tools.user_command").delete("DebugToolsStartup")
+  pcall(require("debug_tools.user_command").delete, "DebugTools")
 end
 return M

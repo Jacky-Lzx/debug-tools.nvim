@@ -62,3 +62,12 @@ profiling in the parent editor. `startup.last` retains the latest result and
 `startup.show()` reopens it. `disable()` cancels an active measurement.
 
 Validation: `sh tests/run.sh`.
+
+`:DebugToolsStartup [count]` measures startup (default: 10 runs).
+
+## Command ownership
+
+Commands belong to the plugin; choose global entry keys and short aliases in
+your configuration. Registration reports same-name conflicts without replacing
+user commands. Reconfiguration refreshes only commands still owned by this
+plugin, and cleanup preserves subsequent user replacements.

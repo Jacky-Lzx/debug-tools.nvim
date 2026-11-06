@@ -28,6 +28,15 @@ M.profiler = setmetatable({}, {
   end,
 })
 
+function M.get_state()
+  local profiler = package.loaded["debug_tools.profiler"]
+  local result = { enabled = enabled }
+  if profiler then
+    result.profiler = { running = profiler.running == true, highlighted = profiler.highlighted == true }
+  end
+  return result
+end
+
 function M.setup(opts)
   assert(opts == nil or type(opts) == "table", "debug-tools.nvim: setup expects a table")
   opts = vim.deepcopy(opts or {})

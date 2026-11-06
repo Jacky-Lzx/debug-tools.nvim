@@ -82,3 +82,9 @@ or commands. Repeating setup must not accumulate automatic registrations.
 `enable()`. `dispose()` additionally forgets those options. Both preserve global
 functions and commands replaced by the user. Reconfiguration does not stop an
 existing profiler run; invalid options leave it and the active globals untouched.
+
+## Read-only state
+
+`get_state()` returns an independent `{ enabled, profiler }` snapshot.
+`profiler` is absent until that feature is loaded; when present it contains
+`running` and `highlighted`. Inspection never initializes the profiler.

@@ -76,7 +76,7 @@ function M.show(result)
   vim.bo[buf].buftype, vim.bo[buf].bufhidden, vim.bo[buf].swapfile = "nofile", "wipe", false
   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].filetype, vim.bo[buf].modifiable = "debug-tools-startuptime", false
-  vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = buf, silent = true })
+  vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = buf, silent = true, desc = "Close startup report" })
   vim.keymap.set("n", "<CR>", function()
     local row = result.rows[api.nvim_win_get_cursor(0)[1] - 6]
     if not row then

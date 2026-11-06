@@ -164,10 +164,10 @@ function M.show()
   end
   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].filetype, vim.bo[buf].modifiable = "debug-tools-profile", false
-  vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = buf })
+  vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = buf, desc = "Close profiling report" })
   vim.keymap.set("n", "<CR>", function()
     jump(report.functions[api.nvim_win_get_cursor(0)[1] - 2])
-  end, { buffer = buf })
+  end, { buffer = buf, desc = "Open profiled function source" })
   return buf
 end
 

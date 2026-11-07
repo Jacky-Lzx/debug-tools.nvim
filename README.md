@@ -90,3 +90,5 @@ existing profiler run; invalid options leave it and the active globals untouched
 `running` and `highlighted`. Inspection never initializes the profiler.
 
 Structured inspection notifications carry Lua formatting metadata while retaining string messages for the default Neovim notifier.
+
+[Test workflow](tests/README.md): registered suites, filtering, required fixtures and retained failure evidence.

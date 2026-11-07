@@ -88,3 +88,5 @@ existing profiler run; invalid options leave it and the active globals untouched
 `get_state()` returns an independent `{ enabled, profiler }` snapshot.
 `profiler` is absent until that feature is loaded; when present it contains
 `running` and `highlighted`. Inspection never initializes the profiler.
+
+Structured inspection notifications carry Lua formatting metadata while retaining string messages for the default Neovim notifier.

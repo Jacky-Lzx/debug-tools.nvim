@@ -11,7 +11,7 @@ function M.inspect(...)
   local message = table.concat(values, "\n")
   vim.notify(message, vim.log.levels.INFO, {
     title = ("Debug · %s:%d"):format((caller.short_src or "?"), caller.currentline or 0),
-    ft = "lua",
+    filetype = "lua",
   })
   return message
 end
